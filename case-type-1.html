@@ -1,0 +1,178 @@
+<style>
+@import url('https://fonts.googleapis.com/css?family=Arvo');
+body {
+	background: rgb(25,25,33);
+}
+.raffle-roller {
+    	height: 100px;
+    	position: relative;
+    	margin: 60px auto 30px auto;
+    	width: 900px;
+}
+.raffle-roller-holder {
+    	position: absolute;
+    	top: 0;
+    	left: 0;
+    	right: 0;
+    	bottom: 0;
+    	height: 100px;
+    	width: 100%;
+}
+.raffle-roller-holder {
+    	overflow: hidden;
+    	border-radius: 2px;
+	border: 1px solid #3c3759;
+}
+.raffle-roller-holder {
+    	position: absolute;
+    	top: 0;
+    	left: 0;
+    	right: 0;
+    	bottom: 0;
+    	height: 100px;
+    	width: 100%;
+}
+.raffle-roller-container {
+    	width: 9999999999999999999px;
+    	max-width: 999999999999999999px;
+    	height: 100px;
+    	background: #191726;
+    	margin-left: 0;
+    	transition: all 8s cubic-bezier(.08,.6,0,1);
+}
+.raffle-roller-holder:before {
+	content: "";
+	position: absolute;
+	border: none;
+	z-index: 12222225;
+	width: 5px;
+	height: 100%;
+	left: 50%;
+	background: #d16266;
+}
+.item {
+	display: inline-block;
+	float: left;
+	margin: 4px 0px 0.5px 5px;
+    	width: 85px;
+	height: 88px;
+    	float: left;
+	border: 1px solid #70677c;
+	background: #14202b;
+	background-size: 100%;
+   	background-repeat: no-repeat;
+    	background-position: center;
+}
+.class_red_item {
+	border-bottom: 4px solid #EB4B4B;
+}
+img {
+	border: 0;
+	vertical-align: middle;
+}
+.winning-item {
+	border: 2px solid #66b233;
+	position: relative;
+	top: -1px;
+    	border-bottom: 4px solid #66b233;
+}
+.inventory {
+	margin: 0 auto;
+	width: 960px;
+	max-width: 953px;
+	padding: 10px 15px 6px;
+	height: auto;
+	border: 2px solid #1c3344;
+	background: #0e1a23;
+}
+.inventory > .item {
+	float: none;
+	cursor: pointer;
+	margin: 4px 2px 0.5px 2px;
+}
+.inventory > .item:hover {
+	background-size: 90%;
+	background-color: #182a38;
+}
+.inventory > .item:active {
+	height: 83px;
+	width: 80px;
+	position: relative;
+	top: -2px;
+	border: 2px solid #356d27;
+	border-bottom: 4px solid #356d27;
+}
+</style>
+<div class="raffle-roller">
+	<div class="raffle-roller-holder">
+		<div class="raffle-roller-container" style="margin-left: 0px;">
+		</div>
+	</div>
+</div>
+<center><span style="font-size: 25px;">You winning is <span style="color: green;" id="rolled">rolling</span>
+<br>
+<button onclick="generate(1);">go</button>
+<button onclick="window.location='';">reset</button></center>
+<br>
+<div class="inventory"></div>
+<script src="https://twentypoundbird.com/public/source/js/jquery-3.2.1.min.js"></script>
+<script>
+var items = {
+	simple: {
+		skin: "M4A1-S | Cyrex",
+		img: "https://steamcdn-a.akamaihd.net/apps/730/icons/econ/default_generated/weapon_m4a1_silencer_cu_m4a1s_cyrex_light_large.144b4053eb73b4a47f8128ebb0e808d8e28f5b9c.png"
+	},
+	middle: {
+		skin: "M4A1-S | Chantico's Fire",
+		img: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhz2v_Nfz5H_uO1gb-Gw_alIITCmX5d_MR6j_v--YXygED6_UZrMTzwJYSdJlU8N1zY81TrxO_v0MW9uJnBm3Rk7nEk5XfUmEeyhQYMMLIUhCYx0A"
+	},
+	super: {
+		skin: "M4A4 | Asiimov",
+		img: "https://steamcdn-a.akamaihd.net/apps/730/icons/econ/default_generated/weapon_m4a1_cu_m4_asimov_light_large.af03179f3d43ff55b0c3d114c537eac77abdb6cf.png"
+	}
+};
+function generate(ng) {
+	$('.raffle-roller-container').css({
+		transition: "sdf",
+		"margin-left": "0px"
+	}, 10).html('');
+	var randed2 = prompt('enter skin(1-asiimov,3-cyrex,2-chantico)','');
+	for(var i = 0;i < 101; i++) {
+		var element = '<div id="CardNumber'+i+'" class="item class_red_item" style="background-image:url('+items.simple.img+');"></div>';
+		var randed = randomInt(1,1000);
+		if(randed < 50) {
+			element = '<div id="CardNumber'+i+'" class="item class_red_item" style="background-image:url('+items.super.img+');"></div>';
+		} else if(500 < randed) {
+			element = '<div id="CardNumber'+i+'" class="item class_red_item" style="background-image:url('+items.middle.img+');"></div>';
+		}
+		$(element).appendTo('.raffle-roller-container');
+	}
+	setTimeout(function() {
+		if(randed2 == 2) {
+			goRoll(items.middle.skin, items.middle.img);
+		} else if(randed2 == 1) {
+			goRoll(items.super.skin, items.super.img);
+		} else {
+			goRoll(items.simple.skin, items.simple.img);
+		}
+	}, 500);
+}
+function goRoll(skin, skinimg) {
+	$('.raffle-roller-container').css({
+		transition: "all 8s cubic-bezier(.08,.6,0,1)"
+	});
+	$('#CardNumber78').css({
+		"background-image": "url("+skinimg+")"
+	});
+	setTimeout(function() {
+		$('#CardNumber78').addClass('winning-item');
+		$('#rolled').html(skin);
+		var win_element = "<div class='item class_red_item' style='background-image: url("+skinimg+")'></div>";
+		$(win_element).appendTo('.inventory');
+	}, 8500);
+	$('.raffle-roller-container').css('margin-left', '-6770px');
+}
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+</script>
