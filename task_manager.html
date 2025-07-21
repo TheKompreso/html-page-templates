@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Планировщик действий</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f0f0f0;
+  }
+  h1 {
+    text-align: center;
+  }
+  form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  input[type="text"], input[type="time"] {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    flex: 1;
+    min-width: 150px;
+  }
+  button {
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  #list {
+    display: flex;
+    flex-direction: column-reverse; /* новые сверху */
+    gap: 10px;
+  }
+  .item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Планировщик действий</h1>
+
+<form id="actionForm">
+  <input type="text" id="actionName" placeholder="Название действия" required />
+  <input type="time" id="actionTimeFrom" placeholder="Время от" required />
+  <input type="time" id="actionTimeTo" placeholder="Время до" required />
+  <button type="submit">Добавить</button>
+</form>
+
+<div id="list"></div>
+
+<script>
+	const form = document.getElementById('actionForm');
+	const listContainer = document.getElementById('list');
+
+	let actions = JSON.parse(localStorage.getItem('actions')) || [];
+
+	// Функция отображения всех действий
+	function renderActions() {
+		listContainer.innerHTML = '';
+
+		// Сортируем по времени
+		const sortedActions = [...actions].sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));
+
+		sortedActions.forEach((action) => {
+			const itemDiv = document.createElement('div');
+			itemDiv.className = 'item';
+
+			const textSpan = document.createElement('span');
+			textSpan.textContent = `${action.timeFrom} - ${action.timeTo} : ${action.name}`;
+
+			const deleteBtn = document.createElement('button');
+			deleteBtn.textContent = 'Удалить';
+			deleteBtn.onclick = () => {
+				actions.splice(actions.indexOf(action),1);
+				saveAndRender();
+			};
+
+			itemDiv.appendChild(textSpan);
+			itemDiv.appendChild(deleteBtn);
+			listContainer.appendChild(itemDiv);
+		});
+	}
+
+	// Сохраняем и перерисовываем список
+	function saveAndRender() {
+		localStorage.setItem('actions', JSON.stringify(actions));
+		renderActions();
+	}
+
+	// Обработчик формы добавления
+	form.onsubmit = (e) => {
+		e.preventDefault();
+		const name = document.getElementById('actionName').value.trim();
+		const timeFrom = document.getElementById('actionTimeFrom').value;
+		const timeTo = document.getElementById('actionTimeTo').value;
+
+		if (name && timeFrom && timeTo) {
+			if (timeFrom > timeTo) {
+				alert("Время 'от' не может быть больше времени 'до'.");
+				return;
+			}
+			actions.push({name, timeFrom, timeTo});
+			saveAndRender();
+			form.reset();
+		}
+	};
+
+	// Изначально отображаем список
+	renderActions();
+</script>
+
+</body>
+</html>
